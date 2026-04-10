@@ -1,4 +1,4 @@
-iapiVersion: apps/v1
+apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: mysql
@@ -34,7 +34,8 @@ spec:
   - metadata:
       name: data
     spec:
-      accessModes: ["ReadWriteOnce"]
+      accessModes:
+      - ReadWriteOnce
       resources:
         requests:
           storage: 10Gi
