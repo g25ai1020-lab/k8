@@ -3,9 +3,58 @@ kind: Ingress
 metadata:
   name: banking-ingress
   namespace: banking-app
+  annotations:
+    kubernetes.io/ingress.class: "gce"
+    kubernetes.io/ingress.global-static-ip-name: "api-gateway-lb-ip"
 spec:
-  defaultBackend:
-    service:
-      name: api-gateway
-      port:
-        number: 80
+  rules:
+  - host: banking-vcc.net
+    http:
+      paths:
+      - path: /account
+        pathType: Prefix
+        backend:
+          service:
+            name: account-service
+            port:
+              number: 8081
+
+      - path: /fund
+        pathType: Prefix
+        backend:
+          service:
+            name: fund-transfer
+            port:
+              number: 8090
+
+      - path: /sequence
+        pathType: Prefix
+        backend:
+          service:
+            name: sequence-generator
+            port:
+              number: 8091
+
+      - path: /transaction
+        pathType: Prefix
+        backend:
+          service:
+            name: transaction-service
+            port:
+              number: 8092
+
+      - path: /user
+        pathType: Prefix
+        backend:
+          service:
+            name: user-service
+            port:
+              number: 8080
+
+      - path: /eureka
+        pathType: Prefix
+        backend:
+          service:
+            name: service-registry
+            port:
+              number: 8761
