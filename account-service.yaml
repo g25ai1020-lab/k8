@@ -1,28 +1,30 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: customer-service
+  name: account-service
   namespace: banking-app
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: customer-service
+      app: account-service
   template:
     metadata:
       labels:
-        app: customer-service
+        app: account-service
     spec:
       containers:
-      - name: customer-service
-        image: gcr.io/cloud-computing-488905/customer-service:latest
+      - name: account-service
+        image: gcr.io/cloud-computing-488905/account-service:latest
         ports:
-        - containerPort: 8082
+        - containerPort: 8081
         env:
+        - name: EUREKA_URI
+          value: "http://service-registry.banking-app.svc.cluster.local:8761/eureka"
         - name: SPRING_DATASOURCE_URL
-          value: jdbc:mysql://mysql.banking-app.svc.cluster.local:3306/bankingdb
+          value: "jdbc:mysql://mysql.banking-app.svc.cluster.local:3306/bankingdb"
         - name: SPRING_DATASOURCE_USERNAME
-          value: root
+          value: "root"
         - name: SPRING_DATASOURCE_PASSWORD
           valueFrom:
             secretKeyRef:
@@ -32,10 +34,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: customer-service
+  name: account-service
   namespace: banking-app
 spec:
   selector:
-    app: customer-service
+    app: account-service
   ports:
-    - port: 8082
+  - port: 8081

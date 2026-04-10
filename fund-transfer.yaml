@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fund-transfer
+  namespace: banking-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fund-transfer
+  template:
+    metadata:
+      labels:
+        app: fund-transfer
+    spec:
+      containers:
+      - name: fund-transfer
+        image: gcr.io/cloud-computing-488905/fund-transfer:latest
+        ports:
+        - containerPort: 8090
+        env:
+        - name: EUREKA_URI
+          value: "http://service-registry.banking-app.svc.cluster.local:8761/eureka"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fund-transfer
+  namespace: banking-app
+spec:
+  selector:
+    app: fund-transfer
+  ports:
+  - port: 8090

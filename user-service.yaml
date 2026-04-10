@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-service
+  namespace: banking-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: user-service
+  template:
+    metadata:
+      labels:
+        app: user-service
+    spec:
+      containers:
+      - name: user-service
+        image: gcr.io/cloud-computing-488905/user-service:latest
+        ports:
+        - containerPort: 8080
+        env:
+        - name: EUREKA_URI
+          value: "http://service-registry.banking-app.svc.cluster.local:8761/eureka"
+        - name: SEQUENCE_SERVICE_URL
+          value: "http://sequence-generator.banking-app.svc.cluster.local:8091"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-service
+  namespace: banking-app
+spec:
+  selector:
+    app: user-service
+  ports:
+  - port: 8080
